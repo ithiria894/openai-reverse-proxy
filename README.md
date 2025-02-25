@@ -3,7 +3,7 @@
 
 This project implements a reverse proxy to the OpenAI LLM service using nginx and mitmproxy. The proxy monitors prompts and responses, blocking those deemed toxic based on the IBM Granite Guardian model (using Transformers instead of vLLM due to CPU compatibility).
 
-I completed the main parts of the task, including setting up the reverse proxy, intercepting requests using mitmproxy, and integrating the Guardian model. However, due to my current development environment (WSL2 on Windows 11), I encountered networking issues when trying to set up Docker. Since I lack prior experience with Docker and Nginx, I spent extra time troubleshooting but couldn't fully resolve the issue within the given timeframe. I plan to continue learning Docker deployment to improve this in the future.
+I completed the main parts of the task, including setting up the reverse proxy, intercepting requests using mitmproxy, and integrating the Guardian model. However, due to my current development environment (WSL2 on Windows 11), I encountered networking issues when trying to set up Docker. Since I lack prior experience with Docker and Nginx, I spent extra time troubleshooting but couldn't fully resolve the issue within a short timeframe. I plan to continue learning Docker deployment to improve this in the future.
 
 
 ## Environment & Model
