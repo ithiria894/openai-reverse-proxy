@@ -3,7 +3,7 @@
 
 This project implements a reverse proxy to the OpenAI LLM service using nginx and mitmproxy. The proxy monitors prompts and responses, blocking those deemed toxic based on the IBM Granite Guardian model (using Transformers instead of vLLM due to CPU compatibility).
 
-environment:WSL2, Ubuntu 22.04
+environment: WSL2, Ubuntu 22.04
 
 ## System Architecture
 
@@ -32,7 +32,7 @@ The flow of requests is:
 
 **client -> nginx(terminate SSL) -> mitmproxy(filter) -> OpenAI**
 
-model:ibm-granite/granite-guardian-hap-38m
+model: ibm-granite/granite-guardian-hap-38m
 
 Due to the limited CPU resources on my system, I used the Hugging Face Transformers library instead of vLLM.
 
