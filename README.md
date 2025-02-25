@@ -66,6 +66,13 @@ Several factors influenced these implementation choices:
 1. **Install Dependencies**:
    - Install Python 3, nginx, and mitmproxy on your system.
    - Run `pip install -r requirements.txt` to install Python dependencies.
+   - Install nginx and mitmproxy on WSL2:
+   ```
+   sudo apt update
+   sudo apt install nginx
+   sudo apt install mitmproxy
+   ```
+   
 
 2. **Generate SSL Certificates**:
    - Run the provided script to generate self-signed certificates with SAN (Subject Alternative Name) for nginx:
