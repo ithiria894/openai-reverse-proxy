@@ -1,0 +1,6 @@
+torch==2.3.0
+transformers==4.49.0
+numpy==1.26.4
+requests
+python-dotenv
+mitmproxy
