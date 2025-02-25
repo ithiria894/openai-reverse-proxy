@@ -1,3 +1,4 @@
+![Sample Output](sampleoutput.png)
 # OpenAI Reverse Proxy with Toxicity Filtering
 
 This project implements a reverse proxy to the OpenAI LLM service using nginx and mitmproxy. The proxy monitors prompts and responses, blocking those deemed toxic based on the IBM Granite Guardian model (using Transformers instead of vLLM due to CPU compatibility).
