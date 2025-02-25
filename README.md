@@ -55,7 +55,7 @@ Several factors influenced these implementation choices:
 
 
 ## Files
-- `2openaiRequestOriginal.py`: Python script to send prompts to nginx then to mitmproxy.
+- `2openaiRequestOriginal.py`: Client side script to send prompts to nginx.
 - `mitOpenWGuardianhapOriginal.py`: mitmproxy module to intercept and filter requests/responses.
 - `nginx_default`: nginx configuration to terminate SSL.
 - `sampleoutput.png`: Screenshot of test results.
@@ -72,7 +72,7 @@ Several factors influenced these implementation choices:
    sudo apt install nginx
    sudo apt install mitmproxy
    ```
-   
+
 
 2. **Generate SSL Certificates**:
    - Run the provided script to generate self-signed certificates with SAN (Subject Alternative Name) for nginx:
