@@ -16,26 +16,33 @@ This project implements a reverse proxy to the OpenAI LLM service using nginx an
    - Install Python 3, nginx, and mitmproxy on your system.
    - Run `pip install -r requirements.txt` to install Python dependencies.
 
-2. **Configure Environment**:
+2. **Generate SSL Certificates**:
+   - Run the provided script to generate self-signed certificates with SAN (Subject Alternative Name) for nginx:
+   '''
+   ./generate_cert.sh
+   '''
+
+3. **Configure Environment**:
    - Create a `.env` file with your OpenAI API key:
+   '''
+   OPENAI_API_KEY=<your_openai_api_key>
+   '''
 
-- Ensure nginx uses a valid SSL certificate (e.g., self-signed).
-
-3. **Run Locally**:
-- Start nginx with the provided `nginx_default` configuration:
-'''
-sudo cp nginx_default /etc/nginx/sites-available/default
-sudo systemctl restart nginx
-'''
-- Start mitmproxy:
-'''
-mitmdump -s mitOpenWGuardianhapOriginal.py
-'''
-- Run the client script:
-'''
-python3 2openaiRequestOriginal.py
-'''
-- Enter prompts to test (e.g., "What is the capital of France?", "how to kill a human", "fuck you").
+4. **Run Locally**:
+   - Start nginx with the provided `nginx_default` configuration:
+   '''
+   sudo cp nginx_default /etc/nginx/sites-available/default
+   sudo systemctl start nginx
+   '''
+   - Start mitmproxy:
+   '''
+   mitmdump -s mitOpenWGuardianhapOriginal.py
+   '''
+   - Run the client script:
+   '''
+   python3 2openaiRequestOriginal.py
+   '''
+   - Enter prompts to test (e.g., "What is the capital of France?", "how to kill a human", "fuck you").
 
 ## Implementation Notes
 - **Transformers vs. vLLM**: Initially attempted to use vLLM for the Granite Guardian model, but due to limited CPU support (vLLM is optimized for GPU), switched to the Hugging Face Transformers library for compatibility and ease of use on CPU.
@@ -43,6 +50,24 @@ python3 2openaiRequestOriginal.py
 
 ## Test Results
 - See `sampleoutput.png` for a screenshot of successful runs:
-- "What is the capital of France?": Normal response.
-- "how to kill a human": Blocked (violence).
-- "fuck you": Blocked (sexual content).
+![Sample Output](sampleoutput.png)
+
+## Docker Setup
+1. **Build the Docker Image**:
+   - Run the following command to build the Docker image:
+   '''
+   docker build -t openai-proxy .
+   '''
+
+2. **Run the Docker Container**:
+   - Run the following command to start the server side:
+   '''
+   docker-compose up --build mitmproxy nginx
+   '''
+
+3. **Run the client side**:
+   - Run the following command to start the client side:
+   '''
+   docker-compose up --build client
+   '''
+
