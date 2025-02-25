@@ -81,7 +81,7 @@ Several factors influenced these implementation choices:
    ```
 
 3. **Configure Environment**:
-   - Create a `.env` file with your OpenAI API key:
+   - Modify the `.env` file with your OpenAI API key:
    ```
    OPENAI_API_KEY=<your_openai_api_key>
    ```
