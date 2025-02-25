@@ -30,7 +30,7 @@ The system follows a multi-layer architecture for request handling and content f
 
 The flow of requests is:
 
-client -> nginx(terminate SSL) -> mitmproxy(filter) -> OpenAI
+**client -> nginx(terminate SSL) -> mitmproxy(filter) -> OpenAI**
 
 model:ibm-granite/granite-guardian-hap-38m
 
