@@ -18,10 +18,10 @@ WORKDIR /app
 COPY mitOpenWGuardianhap.py /app/mitOpenWGuardianhap.py
 COPY 2openaiRequest.py /app/2openaiRequest.py
 COPY nginx_default /etc/nginx/sites-available/default
-COPY nginx.crt /etc/nginx/ssl/nginx.crt
-COPY nginx.key /etc/nginx/ssl/nginx.key
-COPY mitmproxy.crt /app/mitmproxy.crt
-COPY mitmproxy.key /app/mitmproxy.key
+COPY /etc/nginx/ssl/nginx.crt /etc/nginx/ssl/nginx.crt
+COPY /etc/nginx/ssl/nginx.key /etc/nginx/ssl/nginx.key
+# COPY mitmproxy.crt /app/mitmproxy.crt
+# COPY mitmproxy.key /app/mitmproxy.key
 COPY .env /app/.env
 
 RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
