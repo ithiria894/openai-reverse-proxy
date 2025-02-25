@@ -3,7 +3,16 @@
 
 This project implements a reverse proxy to the OpenAI LLM service using nginx and mitmproxy. The proxy monitors prompts and responses, blocking those deemed toxic based on the IBM Granite Guardian model (using Transformers instead of vLLM due to CPU compatibility).
 
-environment:WSL2, Ubuntu 22.04
+## Environment & Model
+
+**Environment:**
+- Operating System: WSL2 (Windows Subsystem for Linux)
+- Distribution: Ubuntu 22.04
+
+**Model:**
+- Name: ibm-granite/granite-guardian-hap-38m
+- Type: Toxicity Detection Model
+
 
 ## System Architecture
 
@@ -30,9 +39,9 @@ The system follows a multi-layer architecture for request handling and content f
 
 The flow of requests is:
 
-client -> nginx(terminate SSL) -> mitmproxy(filter) -> OpenAI
+**client -> nginx(terminate SSL) -> mitmproxy(filter) -> OpenAI**
 
-model:ibm-granite/granite-guardian-hap-38m
+
 
 Due to the limited CPU resources on my system, I used the Hugging Face Transformers library instead of vLLM.
 
@@ -57,6 +66,13 @@ Several factors influenced these implementation choices:
 1. **Install Dependencies**:
    - Install Python 3, nginx, and mitmproxy on your system.
    - Run `pip install -r requirements.txt` to install Python dependencies.
+   - Install nginx and mitmproxy on WSL2:
+   ```
+   sudo apt update
+   sudo apt install nginx
+   sudo apt install mitmproxy
+   ```
+   
 
 2. **Generate SSL Certificates**:
    - Run the provided script to generate self-signed certificates with SAN (Subject Alternative Name) for nginx:
