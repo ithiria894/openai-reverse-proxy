@@ -91,8 +91,7 @@ Several factors influenced these implementation choices:
 - See `sampleoutput.png` for a screenshot of successful runs:
 ![Sample Output](sampleoutput.png)
 
-## Implementation Notes
-- **Transformers vs. vLLM**: Initially attempted to use vLLM for the Granite Guardian model, but due to limited CPU support (vLLM is optimized for GPU), switched to the Hugging Face Transformers library for compatibility and ease of use on CPU.
+
 
 ## Docker Setup
 
