@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  nginx:
+    build: .
+    ports:
+      - "8443:8443"
+    # networks:
+    #   - app_network
+    volumes:
+      - ./nginx.crt:/etc/nginx/ssl/nginx.crt
+      - ./nginx.key:/etc/nginx/ssl/nginx.key
+      - ./nginx_default:/etc/nginx/sites-available/default
+    command: nginx -g "daemon off;"
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "-k", "https://localhost:443"]  # 假設 NGINX 同時監聽 80 端口
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 3
+    # healthcheck:
+    #   test: ["CMD", "pgrep", "nginx"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 3
+    # network_mode: "host"
+
+  mitmproxy:
+    build: .
+    ports:
+      - "8080:8080"
+      # - "8081:8081"
+    # networks:
+    #   - app_network
+    volumes:
+      - ./mitmproxy.crt:/app/mitmproxy.crt
+      - ./mitmproxy.key:/app/mitmproxy.key
+    command: mitmdump -s /app/mitOpenWGuardianhap.py #--listen-port 8080 --listen-port 8081 --set ssl_insecure=true --set certs=*=mitmproxy.crt
+    # healthcheck:
+    #   test: ["CMD", "pgrep", "mitmdump"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 3
+      # start_period: 60s
+    # network_mode: "host"
+
+  client:
+    build: .
+    # networks:
+    #   - app_network
+    command: python3 /app/2openaiRequest.py
+    tty: true
+    stdin_open: true
+    # depends_on:
+    #   nginx:
+    #     condition: service_healthy
+    #   mitmproxy:
+    #     condition: service_healthy
+    volumes:
+      - ./nginx.crt:/app/nginx.crt
+      # - ./mitmproxy.crt:/app/mitmproxy.crt
+      - ./mitmproxy-ca-cert.pem:/app/mitmproxy-ca-cert.pem
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    # network_mode: "host" # 保持主機網路模式
+    # depends_on:
+    #   mitmproxy:
+    #     condition: service_healthy
+
+# networks:
+#   app_network:
+#     driver: bridge
