@@ -124,7 +124,7 @@ Several factors influenced these implementation choices:
 ### nginx Issues and Implementation Details
 
 #### Overview
-In Docker, I encountered persistent issues with nginx proxying (including 400 Bad Request and NameResolutionError). As a result, the final submitted version connects directly to mitmproxy locally, with the nginx setup retained for reference purposes.
+I successfully ran client -> nginx -> mitmproxy -> OpenAI API on my local computer. Then, I tried to set up the same full proxy chain in Docker: client -> nginx -> mitmproxy -> OpenAI API, with nginx stopping SSL at port 8443 and passing requests to mitmproxy at port 8080. But I kept hitting problems that stopped nginx from working in Docker. Here’s what went wrong, what I tried, and why I ended up connecting directly to mitmproxy:
 
 #### Local vs Docker Implementation
 - **Local Success**: Successfully implemented client -> nginx -> mitmproxy -> OpenAI API
@@ -133,49 +133,34 @@ In Docker, I encountered persistent issues with nginx proxying (including 400 Ba
 #### Technical Challenges
 
 1. **Nginx Proxying Issues**
-   - Nginx sent only relative paths (/v1/chat/completions) instead of full URLs
-   - Resulted in 400 Bad Request errors
-   - Invalid HTTP request format (expected authority/absolute, received relative)
+   - I set nginx to use proxy_pass http://mitmproxy:8081 to send the client’s HTTPS requests to mitmproxy. But nginx only sent a relative path (/v1/chat/completions) instead of the full URL or a CONNECT request, which mitmproxy expects for HTTPS. This caused a 400 Bad Request error (Invalid HTTP request form: expected authority or absolute, got relative).
 
 2. **CONNECT Request Problems**
-   - Adding proxy_method CONNECT didn't resolve issues
-   - Nginx continued sending HTTP POST instead of proper CONNECT tunnel
+   - I added proxy_method CONNECT to mimic an HTTPS CONNECT request, but it didn’t help. nginx still sent an HTTP POST instead of a proper CONNECT tunnel.
 
 3. **Script Execution**
-   - Mitmproxy rejected malformed requests
-   - Prevention of mitOpenWGuardianhap.py execution
-   - Filtering functionality compromised
+   - Because mitmproxy rejected the badly formatted request early, the request function in mitOpenWGuardianhap.py never ran, so the filtering couldn’t happen.
 
 #### Attempted Solutions
 
 1. **SSL Configuration**
-   - Implemented self-signed certificates with SAN (localhost, nginx)
-   - Port 8443 SSL termination setup
-   - Issue persisted despite proper SSL configuration
+   - I made sure nginx stopped SSL correctly at port 8443 using a self-signed certificate with SAN (localhost, nginx), but the problem stayed.
 
 2. **Mitmproxy HTTPS**
-   - Attempted direct HTTPS acceptance on port 8081
-   - Used --certs *=mitmproxy.crt configuration
+   - I tried making mitmproxy accept HTTPS on port 8081 with --certs *=mitmproxy.crt, hoping nginx could send HTTPS traffic straight to it.
 
 3. **Direct Connection**
-   - Modified 2openaiRequestOriginal.py for direct mitmproxy communication
-   - Successfully tested locally
-
-#### Results
-- **Nginx**: Continued failures despite multiple configuration attempts
-- **Direct Mitmproxy**: Successfully handled requests and toxic prompt filtering
+   - Since nginx wasn’t working, I changed 2openaiRequestOriginal.py to send requests straight to mitmproxy, skipping nginx. This worked fine in docker.
 
 #### Hardware Limitations
-- Docker bridge network DNS complications with WSL
-- Resource constraints leading to NameResolutionError
+- Docker’s bridge network uses its own DNS, which might not work well on WSL because of setup issues or limited resources.
 
 #### Future Improvements
-With additional time, potential solutions include:
-- Configuring mitmproxy for HTTPS on port 8081 with appropriate certificates
-- Implementing proxy_pass https://mitmproxy:8081 in nginx
-- Docker DNS investigation and custom network configuration
-- Enhanced CONNECT request handling
+With more time, I could fix nginx by:
+- Setting up mitmproxy to accept HTTPS on port 8081 with the right certificates and using proxy_pass https://mitmproxy:8081 in nginx.
+- Checking Docker’s DNS with custom networks or more logs.
+- Making nginx fully mimic CONNECT requests, maybe with extra tools or a different setup.
 
 #### Final Implementation
 - **Local**: Full chain implementation (client -> nginx -> mitmproxy -> OpenAI API)
-- **Docker**: Direct mitmproxy connection with nginx configuration retained for reference
+- **Docker**: Direct mitmproxy connection with nginx configuration retained for reference.
